@@ -1,51 +1,54 @@
-function addTask() {
-  const taskInput = document.getElementById("taskInput");
-  const datetime = document.getElementById("datetime");
-  const taskList = document.getElementById("taskList");
+
+const taskForm = document.getElementById('task-form');
+const taskList = document.getElementById('task-list');
+
+taskForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const taskInput = document.getElementById('task-input');
+  const taskDateTime = document.getElementById('task-datetime');
 
   const taskText = taskInput.value.trim();
-  const taskTime = datetime.value;
+  const taskTime = taskDateTime.value;
 
-  if (!taskText) {
-    alert("Enter a task.");
-    return;
-  }
+  if (taskText === '') return;
 
-  const li = document.createElement("li");
+  const li = document.createElement('li');
 
-  const taskContent = document.createElement("span");
-  taskContent.innerText = `${taskText} ${taskTime ? ` | 📅 ${taskTime}` : ''}`;
+  const taskInfo = document.createElement('div');
+  taskInfo.className = 'task-info';
+  taskInfo.innerHTML = `
+    <span class="task-text">${taskText}</span>
+    <small>${taskTime}</small>
+  `;
 
-  const actions = document.createElement("div");
-  actions.className = "task-actions";
+  const actions = document.createElement('div');
+  actions.className = 'actions';
 
-  const completeBtn = document.createElement("button");
-  completeBtn.innerText = "✔";
+  const completeBtn = document.createElement('button');
+  completeBtn.textContent = '✔';
   completeBtn.onclick = () => {
-    taskContent.style.textDecoration = "line-through";
+    taskInfo.querySelector('.task-text').classList.toggle('completed');
   };
 
-  const editBtn = document.createElement("button");
-  editBtn.innerText = "✏";
+  const editBtn = document.createElement('button');
+  editBtn.textContent = '✏';
   editBtn.onclick = () => {
-    const newTask = prompt("Edit task:", taskText);
+    const newTask = prompt('Edit task:', taskText);
     if (newTask) {
-      taskContent.innerText = `${newTask} ${taskTime ? ` | 📅 ${taskTime}` : ''}`;
+      taskInfo.querySelector('.task-text').textContent = newTask;
     }
   };
 
-  const deleteBtn = document.createElement("button");
-  deleteBtn.innerText = "🗑";
-  deleteBtn.onclick = () => li.remove();
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = '🗑';
+  deleteBtn.onclick = () => {
+    li.remove();
+  };
 
-  actions.appendChild(completeBtn);
-  actions.appendChild(editBtn);
-  actions.appendChild(deleteBtn);
-
-  li.appendChild(taskContent);
-  li.appendChild(actions);
+  actions.append(completeBtn, editBtn, deleteBtn);
+  li.append(taskInfo, actions);
   taskList.appendChild(li);
 
-  taskInput.value = "";
-  datetime.value = "";
-}
+  taskInput.value = '';
+  taskDateTime.value = '';
+});
